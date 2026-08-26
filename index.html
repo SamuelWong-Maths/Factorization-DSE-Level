@@ -3,92 +3,271 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Daily Maths Practice: Factorization</title>
-  <script src="https://unpkg.com/mathlive"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.2.0/math.min.js"></script>
+  <title>Daily Maths Practice: Factorisation</title>
+  <!-- KaTeX for crystal-clear, rock-solid math rendering without script errors -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <!-- MathLive for interactive student input & virtual keyboard -->
+  <script src="https://cdn.jsdelivr.net/npm/mathlive@0.98.6/dist/mathlive.min.js" crossorigin="anonymous"></script>
+  <!-- MathJS for intelligent algebraic equivalence checking -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@13.2.0/lib/browser/math.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root { --ink:#18344f; --blue:#1769aa; --green:#137a4a; --amber:#dda20a; --purple:#7042a6; --bg:#edf4f8; --line:#c8d8e5; }
-    * { box-sizing:border-box; }
-    body { margin:0; background:var(--bg); color:#1f2937; font-family:Arial,sans-serif; }
-    .app { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:10px; }
-    .panel { width:min(1120px,100%); padding:18px; background:#fff; border-radius:18px; box-shadow:0 8px 28px #17324d22; }
-    .hidden { display:none !important; }
-    button { border:0; border-radius:10px; color:#fff; padding:11px 16px; font-weight:700; cursor:pointer; touch-action:manipulation; }
-    button:active { transform:scale(.98); }
-    .level-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px; }
-    .level { min-height:105px; font-size:1.12rem; }
-    .one { background:var(--green); }
-    .two { background:var(--amber); color:#2c2100; }
-    .three { background:var(--purple); }
-    .layout { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr); gap:18px; align-items:start; }
-    .question-math { width:100%; min-height:82px; display:block; border:0; background:transparent; font-size:1.45rem; text-align:center; pointer-events:none; }
-    .answer-math { width:min(100%,540px); min-height:56px; display:block; margin:7px auto; padding:8px; border:2px solid var(--line); border-radius:10px; font-size:1.45rem; }
-    math-field::part(menu-toggle), math-field::part(virtual-keyboard-toggle) { display:none; }
-    .keyboard { width:min(100%,570px); margin:auto; padding:9px; border:1px solid var(--line); border-radius:12px; background:#f2f7fb; }
-    .key-row { display:grid; gap:7px; margin:7px 0; }
-    .variables { grid-template-columns:repeat(7,1fr); }
-    .numbers { grid-template-columns:repeat(10,1fr); }
-    .operators { grid-template-columns:repeat(7,1fr); }
-    .key { min-height:40px; padding:4px; color:var(--ink); background:#fff; border:1px solid #bcd0dd; font-size:1.05rem; }
-    .key.special { background:#dceefa; color:#075c9e; }
-    .key.delete { background:#ffe5e5; color:#a11; }
-    .actions { display:flex; justify-content:center; gap:10px; margin-top:12px; }
-    .check { background:#137a4a; }
-    .back { background:#64748b; }
-    .scratch-wrap { overflow:hidden; border:2px dashed #b8c9d5; border-radius:12px; background:#fbfdff; }
-    canvas { width:100%; height:260px; display:block; touch-action:none; cursor:crosshair; }
-    .clear { display:block; margin:8px auto 0; background:#c2413a; }
-    .modal { position:fixed; inset:0; z-index:20; display:flex; align-items:center; justify-content:center; padding:16px; background:#0008; }
-    .modal-box { width:min(700px,100%); max-height:90vh; overflow:auto; padding:24px; border-radius:16px; background:#fff; text-align:center; }
-    .continue { background:#1769aa; }
-    .check,
-.back,
-.clear,
-.continue {
-  min-width: 170px;
-  min-height: 54px;
-  padding: 14px 24px;
-  font-size: 1.15rem;
-  line-height: 1.2;
-  white-space: nowrap;
-}
+    :root {
+      --ink: #18344f;
+      --blue: #1769aa;
+      --green: #137a4a;
+      --amber: #dda20a;
+      --purple: #7042a6;
+      --bg: #edf4f8;
+      --line: #c8d8e5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #1f2937;
+      font-family: Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .app {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .panel {
+      width: min(1280px, 100%);
+      padding: 24px;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 32px rgba(23, 50, 77, 0.12);
+    }
+    .hidden { display: none !important; }
+    button {
+      border: 0;
+      border-radius: 10px;
+      color: #fff;
+      padding: 12px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.1s, opacity 0.15s;
+    }
+    button:active { transform: scale(0.97); }
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .level {
+      min-height: 120px;
+      font-size: 1.18rem;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .one { background: var(--green); }
+    .two { background: var(--amber); color: #2c2100; }
+    .three { background: var(--purple); }
 
-.clear {
-  min-width: 190px;
-  margin-top: 12px;
-}
+    /* 2-column layout with generous left-column width for math expressions */
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(360px, 1.15fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+    .left-col {
+      display: flex;
+      flex-direction: column;
+    }
+    .right-col {
+      display: flex;
+      flex-direction: column;
+    }
+    .question-math {
+      width: 100%;
+      min-height: 85px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      text-align: left;
+      overflow-x: auto;
+      padding: 8px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .answer-math {
+      width: 100%;
+      max-width: 540px;
+      min-height: 56px;
+      display: block;
+      margin: 6px auto 10px;
+      padding: 8px 12px;
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      font-size: 1.45rem;
+      background: #fff;
+    }
+    .answer-math:focus-within {
+      border-color: var(--blue);
+      outline: none;
+    }
+    math-field::part(menu-toggle),
+    math-field::part(virtual-keyboard-toggle) {
+      display: none;
+    }
+    .keyboard {
+      width: 100%;
+      max-width: 540px;
+      margin: auto;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #f2f7fb;
+    }
+    .key-row {
+      display: grid;
+      gap: 6px;
+      margin: 6px 0;
+    }
+    .variables { grid-template-columns: repeat(7, 1fr); }
+    .numbers { grid-template-columns: repeat(10, 1fr); }
+    .operators { grid-template-columns: repeat(7, 1fr); }
+    .key {
+      min-height: 42px;
+      padding: 4px 2px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid #bcd0dd;
+      border-radius: 8px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      box-shadow: 0 2px 0 #bcd0dd;
+    }
+    .key:active {
+      box-shadow: none;
+      transform: translateY(2px);
+    }
+    .key.special { background: #dceefa; color: #075c9e; border-color: #a9d4f2; }
+    .key.delete { background: #ffe5e5; color: #a11; border-color: #f5b8b8; }
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .check { background: #137a4a; }
+    .back { background: #64748b; }
+    .continue { background: #1769aa; }
+    .clear {
+      display: block;
+      margin: 10px auto 0;
+      background: #c2413a;
+    }
+    .check, .back, .clear, .continue {
+      min-width: 170px;
+      min-height: 52px;
+      padding: 12px 24px;
+      font-size: 1.12rem;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .clear {
+      min-width: 200px;
+    }
 
-.actions {
-  gap: 14px;
-}
+    /* Large Scratchpad designed for iPad touch/pencil */
+    .scratch-wrap {
+      flex: 1;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 2px dashed #a5bccc;
+      border-radius: 14px;
+      background: #fbfdff;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);
+    }
+    canvas {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 480px;
+      display: block;
+      touch-action: none;
+      cursor: crosshair;
+    }
 
-@media (max-width: 800px) {
-  .check,
-  .back,
-  .clear,
-  .continue {
-    min-width: 150px;
-    min-height: 50px;
-    padding: 12px 18px;
-    font-size: 1.05rem;
-  }
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(2px);
+    }
+    .modal-box {
+      width: min(740px, 100%);
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+      border-radius: 18px;
+      background: #fff;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+    }
+    .solution-wrap {
+      margin: 16px 0;
+      padding: 14px;
+      overflow-x: auto;
+      text-align: left;
+      border-left: 5px solid #c2413a;
+      border-radius: 8px;
+      background: #f5f9fc;
+    }
+    .solution-math {
+      width: 100%;
+      min-height: 40px;
+      font-size: 1.15rem;
+    }
 
-  .clear {
-    min-width: 175px;
-  }
-}
-    .solution-wrap { margin:12px 0; padding:12px; overflow:auto; text-align:left; border-left:4px solid #c2413a; border-radius:8px; background:#f5f9fc; }
-    .solution-math { width:100%; min-height:40px; border:0; background:transparent; font-size:1.15rem; pointer-events:none; }
-    @media (max-width:800px) { .app { align-items:flex-start; padding:7px; } .panel { padding:13px; border-radius:12px; } .layout { grid-template-columns:1fr; gap:10px; } .level-grid { gap:8px; } .level { min-height:82px; padding:10px; font-size:.95rem; } canvas { height:155px; } .key { min-height:35px; } }
-    @media (orientation:landscape) and (max-height:820px) { .app { padding:5px; } .panel { padding:10px; } .panel h1 { margin:0; font-size:2.15rem !important; } .level-grid { margin-top:8px; } .level { min-height:65px; padding:8px; } .layout { gap:12px; } .question-math { min-height:54px; } .key-row { margin:4px 0; } .key { min-height:31px; } canvas { height:135px; } .actions { margin-top:7px; } }
+    /* iPad Portrait & Mobile */
+    @media (max-width: 900px) {
+      .app { padding: 10px; align-items: flex-start; }
+      .panel { padding: 16px; }
+      .layout { grid-template-columns: 1fr; gap: 18px; }
+      .level-grid { gap: 10px; }
+      .level { min-height: 90px; font-size: 1rem; }
+      .scratch-wrap, canvas { min-height: 380px; }
+      .check, .back, .clear, .continue { min-width: 140px; min-height: 48px; font-size: 1rem; padding: 10px 18px; }
+    }
+
+    /* iPad Landscape / Tablets */
+    @media (min-width: 901px) and (max-height: 900px) {
+      .app { padding: 12px; }
+      .panel { padding: 18px; }
+      .layout { gap: 20px; }
+      .scratch-wrap, canvas { min-height: 460px; }
+    }
   </style>
 </head>
 <body>
   <main class="app">
     <section id="menu" class="panel text-center">
-      <h1 class="m-0 text-6xl font-bold text-slate-1000">Factorization</h1>
-      <p class="mt-3 text-slate-800">Choose a level to begin practising.</p>
+      <h1 class="m-0 text-6xl font-extrabold text-slate-800 tracking-tight">Factorization</h1>
+      <p class="mt-3 text-lg text-slate-600">Choose a level to begin practising.</p>
       <div class="level-grid">
         <button class="level one" onclick="startQuestion(1)">Level One (S2)</button>
         <button class="level two" onclick="startQuestion(2)">Level Two (S3)</button>
@@ -97,29 +276,37 @@
     </section>
 
     <section id="practice" class="panel hidden">
-      <h2 id="levelTitle" class="m-0 mb-1 text-center text-2xl font-bold text-slate-800"></h2>
+      <h2 id="levelTitle" class="m-0 mb-2 text-center text-2xl font-bold text-slate-800"></h2>
       <div class="layout">
-        <div>
-          <math-field id="questionDisplay" class="question-math" read-only></math-field>
-          <p class="my-1 text-center text-slate-600">Enter the expression in fully factorised form.</p>
+        <div class="left-col">
+          <div id="questionDisplay" class="question-math"></div>
+          <p class="my-1 text-center text-sm font-medium text-slate-500">Enter the expression in fully factorized form.</p>
           <div id="answers"></div>
           <div class="keyboard">
             <div class="key-row variables">
-              <button class="key" onclick="insertMath('x')">x</button><button class="key" onclick="insertMath('y')">y</button><button class="key" onclick="insertMath('a')">a</button><button class="key" onclick="insertMath('b')">b</button><button class="key" onclick="insertMath('c')">c</button><button class="key" onclick="insertMath('m')">m</button><button class="key" onclick="insertMath('n')">n</button>
+              <button type="button" class="key" onclick="insertMath('x')">x</button><button type="button" class="key" onclick="insertMath('y')">y</button><button type="button" class="key" onclick="insertMath('a')">a</button><button type="button" class="key" onclick="insertMath('b')">b</button><button type="button" class="key" onclick="insertMath('c')">c</button><button type="button" class="key" onclick="insertMath('m')">m</button><button type="button" class="key" onclick="insertMath('n')">n</button>
             </div>
             <div class="key-row numbers">
-              <button class="key" onclick="insertMath('0')">0</button><button class="key" onclick="insertMath('1')">1</button><button class="key" onclick="insertMath('2')">2</button><button class="key" onclick="insertMath('3')">3</button><button class="key" onclick="insertMath('4')">4</button><button class="key" onclick="insertMath('5')">5</button><button class="key" onclick="insertMath('6')">6</button><button class="key" onclick="insertMath('7')">7</button><button class="key" onclick="insertMath('8')">8</button><button class="key" onclick="insertMath('9')">9</button>
+              <button type="button" class="key" onclick="insertMath('0')">0</button><button type="button" class="key" onclick="insertMath('1')">1</button><button type="button" class="key" onclick="insertMath('2')">2</button><button type="button" class="key" onclick="insertMath('3')">3</button><button type="button" class="key" onclick="insertMath('4')">4</button><button type="button" class="key" onclick="insertMath('5')">5</button><button type="button" class="key" onclick="insertMath('6')">6</button><button type="button" class="key" onclick="insertMath('7')">7</button><button type="button" class="key" onclick="insertMath('8')">8</button><button type="button" class="key" onclick="insertMath('9')">9</button>
             </div>
             <div class="key-row operators">
-              <button class="key special" onclick="insertMath('(')">(</button><button class="key special" onclick="insertMath(')')">)</button><button class="key special" onclick="insertMath('+')">+</button><button class="key special" onclick="insertMath('-')">−</button><button class="key special" onclick="insertMath('^{#?}')">□²</button><button class="key special" onclick="cmdMath('moveToPreviousChar')">◀</button><button class="key delete" onclick="cmdMath('deleteBackward')">⌫</button>
+              <button type="button" class="key special" onclick="insertMath('(')">(</button><button type="button" class="key special" onclick="insertMath(')')">)</button><button type="button" class="key special" onclick="insertMath('+')">+</button><button type="button" class="key special" onclick="insertMath('-')">−</button><button type="button" class="key special" onclick="insertMath('^{#?}')">□²</button><button type="button" class="key special" onclick="cmdMath('moveToPreviousChar')">◀</button><button type="button" class="key delete" onclick="cmdMath('deleteBackward')">⌫</button>
             </div>
           </div>
-          <div class="actions"><button class="check" onclick="checkAnswer()">Check answer</button><button class="back" onclick="backToMenu()">Back</button></div>
+          <div class="actions">
+            <button type="button" class="check" onclick="checkAnswer()">Check answer</button>
+            <button type="button" class="back" onclick="backToMenu()">Back</button>
+          </div>
         </div>
-        <div>
-          <p class="m-0 mb-2 text-center font-bold text-slate-500">Scratchpad</p>
-          <div class="scratch-wrap"><canvas id="scratchpad"></canvas></div>
-          <button class="clear" onclick="clearScratchpad()">Clear scratchpad</button>
+        <div class="right-col">
+          <div class="flex items-center justify-between mb-1 px-1">
+            <span class="font-bold text-slate-600 text-sm tracking-wide uppercase">Scratchpad</span>
+            <span class="text-xs text-slate-400">Pencil / Finger draft</span>
+          </div>
+          <div class="scratch-wrap">
+            <canvas id="scratchpad"></canvas>
+          </div>
+          <button type="button" class="clear" onclick="clearScratchpad()">Clear scratchpad</button>
         </div>
       </div>
     </section>
@@ -127,36 +314,46 @@
 
   <div id="feedback" class="modal hidden">
     <div class="modal-box">
-      <h2 id="feedbackTitle"></h2>
-      <p id="feedbackText"></p>
-      <div id="solutionWrap" class="solution-wrap hidden"><math-field id="solutionDisplay" class="solution-math" read-only></math-field></div>
-      <button id="continueBtn" class="continue" onclick="closeFeedback()">Continue</button>
+      <h2 id="feedbackTitle" class="text-2xl font-bold mb-2"></h2>
+      <p id="feedbackText" class="text-slate-700 text-base mb-3"></p>
+      <div id="solutionWrap" class="solution-wrap hidden">
+        <div id="solutionDisplay" class="solution-math"></div>
+      </div>
+      <button type="button" id="continueBtn" class="continue" onclick="closeFeedback()">Continue</button>
     </div>
   </div>
 
   <script>
     let currentQuestion = null;
     let activeField = null;
-    let canvas, ctx, drawing = false;
+    let canvas = null, ctx = null, drawing = false;
 
-    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const rand = (min, max, excludes = []) => {
+      let v;
+      let count = 0;
+      do {
+        v = Math.floor(Math.random() * (max - min + 1)) + min;
+        count++;
+      } while (excludes.includes(v) && count < 100);
+      return v;
+    };
+
     const gcd = (a, b) => {
-      a = Math.abs(a);
-      b = Math.abs(b);
+      a = Math.abs(a || 0);
+      b = Math.abs(b || 0);
       while (b) [a, b] = [b, a % b];
       return a || 1;
     };
 
-    // Like \leadingCoefficient: hides 1 and -1 only before variables.
     const leadingCoefficient = n => n === 1 ? '' : n === -1 ? '-' : String(n);
-    // Like \coefficient: supplies a sign; hides 1 and -1 only before variables.
     const signedCoefficient = n => n === 1 ? '+' : n === -1 ? '-' : n > 0 ? `+${n}` : String(n);
-    // Constants MUST retain 1: this prevents displays such as 2y+.
     const constantTerm = (n, first = false) => n === 0 ? '' : first ? String(n) : n > 0 ? `+${n}` : String(n);
     const variableTerm = (n, letters, first = false) => n === 0 ? '' : first ? `${leadingCoefficient(n)}${letters}` : `${signedCoefficient(n)}${letters}`;
+    const leadingVariableTerm = (n, letters) => variableTerm(n, letters, true);
     const binomial = (a, v, b, w) => `(${variableTerm(a, v, true)}${variableTerm(b, w)})`;
     const makeQuestion = (questionTex, answers, solutionTex) => ({ questionTex, answers, solutionTex });
 
+    /* ===== LEVEL ONE GENERATORS ===== */
     function genCommonMN() {
       const outer = rand(2, 8), b = rand(2, 9), c = rand(2, 9), d = rand(2, 9);
       const innerGcd = gcd(gcd(b, c), d);
@@ -184,10 +381,13 @@
 
     function genCommonBinomialSquare() {
       let a, b, c, d, x, y, g1, g2;
+      let tries = 0;
       do {
         a = rand(6, 12); b = rand(6, 12); c = rand(2, 5); d = rand(2, 5);
         x = a - c; y = b - d; g1 = gcd(a, b); g2 = gcd(x, y);
-      } while (a / g1 === x / g2 && b / g1 === y / g2);
+        tries++;
+      } while (a / g1 === x / g2 && b / g1 === y / g2 && tries < 30);
+
       const f = `(${variableTerm(a, 'x', true)}${variableTerm(b, 'y')})`;
       const h = `(${variableTerm(c, 'x', true)}${variableTerm(d, 'y')})`;
       const mid = `${f}(${variableTerm(x, 'x', true)}${variableTerm(y, 'y')})`;
@@ -225,9 +425,9 @@
       return makeQuestion(q, [answer], sol);
     }
 
+    /* ===== LEVEL TWO GENERATORS ===== */
     function genPerfectSquare() {
-      let a;
-      do { a = rand(-10, 10); } while (!a || Math.abs(a) === 1);
+      let a = rand(-10, 10, [0, 1, -1]);
       const q = `x^{2}${variableTerm(2 * a, 'xy')}${variableTerm(a * a, 'y^{2}')}`;
       const answer = `(x${variableTerm(a, 'y')})^{2}`;
       return makeQuestion(q, [answer], `${q}=${answer}`);
@@ -249,9 +449,7 @@
     }
 
     function genGeneralQuadratic() {
-      let a = rand(2, 10), b = rand(-10, 10), c = rand(2, 10), d = rand(-10, 10);
-      if (!b) b = 1;
-      if (!d) d = -1;
+      let a = rand(2, 10), b = rand(-10, 10, [0]), c = rand(2, 10), d = rand(-10, 10, [0]);
       const s = a * d + b * c, g1 = gcd(a, b), g2 = gcd(c, d), g = g1 * g2;
       const q = `${variableTerm(a * c, 'x^{2}', true)}${variableTerm(s, 'xy')}${variableTerm(b * d, 'y^{2}')}`;
       const mid = `${binomial(a, 'x', b, 'y')}${binomial(c, 'x', d, 'y')}`;
@@ -259,161 +457,69 @@
       return makeQuestion(q, [answer], g === 1 ? `${q}=${answer}` : `\\begin{aligned}${q}&=${mid}\\\\&=${answer}\\end{aligned}`);
     }
 
-
-
+    /* ===== LEVEL THREE GENERATORS (Left-aligned & strictly extract all common factors at final step) ===== */
     function genLevelThreeI() {
-      let a = rand(-10, 10);
-      let c = rand(-10, 10);
-
-      while (a === 0 || a === 1 || a === -1) {
-        a = rand(-10, 10);
-      }
-
-      while (c === 0 || c === 1 || c === -1) {
-        c = rand(-10, 10);
-      }
-
+      let a = rand(-10, 10, [0, 1, -1]);
+      let c = rand(-10, 10, [0, 1, -1]);
       const one = `x^{2}${variableTerm(2 * a, 'xy')}${variableTerm(a * a, 'y^{2}')}`;
       const two = `${one}${variableTerm(c, 'x')}${variableTerm(a * c, 'y')}`;
-
       const answerOne = `(x${variableTerm(a, 'y')})^{2}`;
-      const answerTwo =
-        `(x${variableTerm(a, 'y')})` +
-        `(x${variableTerm(a, 'y')}${constantTerm(c)})`;
-
-      const q =
-        `\\text{(a) }${one}` +
-        `\\qquad` +
-        `\\text{(b) }${two}`;
-
-      const sol =
-        `\\begin{aligned}` +
-        `\\text{(a) }${one} &= ${answerOne}\\\\` +
-        `\\text{(b) }${two} ` +
-        `&= (x${variableTerm(a, 'y')})^{2}` +
-        `${constantTerm(c)}(x${variableTerm(a, 'y')})\\\\` +
-        `&= ${answerTwo}` +
-        `\\end{aligned}`;
-
+      const answerTwo = `(x${variableTerm(a, 'y')})(x${variableTerm(a, 'y')}${constantTerm(c)})`;
+      const q = `\\begin{aligned}&\\text{(a) }${one}\\\\[4pt]&\\text{(b) }${two}\\end{aligned}`;
+      const sol = `\\begin{aligned}\\text{(a) }${one}&=${answerOne}\\\\\\text{(b) }${two}&=(x${variableTerm(a, 'y')})^{2}${constantTerm(c)}(x${variableTerm(a, 'y')})\\\\&=${answerTwo}\\end{aligned}`;
       return makeQuestion(q, [answerOne, answerTwo], sol);
     }
-
 
     function genLevelThreeII() {
-      const a = rand(2, 15);
-      const b = rand(2, 15);
-
-      let c = rand(-10, 10);
-      while (c === 0 || c === 1 || c === -1) {
-        c = rand(-10, 10);
-      }
-
+      const a = rand(2, 15), b = rand(2, 15);
+      let c = rand(-10, 10, [0, 1, -1]);
       const g = gcd(a, b);
-      const u = a / g;
-      const v = b / g;
+      const u = a / g, v = b / g;
+      const D = g * g;
+      const E = c * g;
+      const X = gcd(D, Math.abs(E)); // Overall common factor extracted at final step
+      const k = X / g; // gcd(g, |c|)
 
-      const h = gcd(g, Math.abs(c));
-      const finalCoefficient = g * h;
+      const qOne = `${a * a}x^{2}-${b * b}y^{2}`;
+      const qTwo = `${qOne}${variableTerm(c * a, 'x')}${variableTerm(c * b, 'y')}`;
 
-      const qOne =
-        `${a * a}x^{2}` +
-        `-${b * b}y^{2}`;
+      const answerOne = g === 1 ? `(${a}x+${b}y)(${a}x-${b}y)` : `${g * g}(${u}x+${v}y)(${u}x-${v}y)`;
+      
+      const secondTerm = `${leadingVariableTerm((g / k) * u, 'x')}${variableTerm(-(g / k) * v, 'y')}${constantTerm(c / k)}`;
+      const answerTwo = X === 1
+        ? `(${u}x+${v}y)(${secondTerm})`
+        : `${X}(${u}x+${v}y)(${secondTerm})`;
 
-      const qTwo =
-        `${qOne}` +
-        `${variableTerm(c * a, 'x')}` +
-        `${variableTerm(c * b, 'y')}`;
-
-      const firstFactor =
-        `(${leadingVariableTerm(a, 'x')}` +
-        `${variableTerm(b, 'y')})`;
-
-      const secondFactor =
-        `(${leadingVariableTerm(a, 'x')}` +
-        `${variableTerm(-b, 'y')}` +
-        `${constantTerm(c)})`;
-
-      const answerOne =
-        g === 1
-          ? `(${a}x+${b}y)(${a}x-${b}y)`
-          : `${g * g}(${u}x+${v}y)(${u}x-${v}y)`;
-
-      const answerTwo =
-        h === 1
-          ? `${g}(${u}x+${v}y)` +
-            `(${g}x${variableTerm(-g * v, 'y')}${constantTerm(c)})`
-          : `${finalCoefficient}` +
-            `(${u}x+${v}y)` +
-            `(${leadingVariableTerm(g / h, 'x')}` +
-            `${variableTerm(-(g / h) * v, 'y')}` +
-            `${constantTerm(c / h)})`;
-
-      const q =
-        `\\text{(a) }${qOne}` +
-        `\\qquad` +
-        `\\text{(b) }${qTwo}`;
-
-      const partASolution =
-        g === 1
-          ? `(${a}x+${b}y)(${a}x-${b}y)`
-          : `(${a}x+${b}y)(${a}x-${b}y)`;
-
-      const partBFirstStep =
-        `(${leadingVariableTerm(a, 'x')}${variableTerm(b, 'y')})` +
-        `(${leadingVariableTerm(a, 'x')}${variableTerm(-b, 'y')})` +
-        `${constantTerm(c)}` +
-        `(${leadingVariableTerm(a, 'x')}${variableTerm(b, 'y')})`;
-
-      const partBGroupingStep =
-        `${firstFactor}` +
-        `${secondFactor}`;
-
-      let finalPartBStep;
-
-      if (h === 1) {
-        finalPartBStep =
-          `${g}` +
-          `(${u}x+${v}y)` +
-          `(${g * u}x${variableTerm(-g * v, 'y')}${constantTerm(c)})`;
-      } else {
-        finalPartBStep =
-          `${finalCoefficient}` +
-          `(${u}x+${v}y)` +
-          `(${leadingVariableTerm(g / h, 'x')}` +
-          `${variableTerm(-(g / h) * v, 'y')}` +
-          `${constantTerm(c / h)})`;
-      }
-
-      const sol =
-        `\\begin{aligned}` +
-        `\\text{(a) }${qOne} ` +
-        `&= ${partASolution}\\\\` +
-        `\\text{(b) }${qTwo} ` +
-        `&= ${partBFirstStep}\\\\` +
-        `&= ${partBGroupingStep}\\\\` +
-        `&= ${finalPartBStep}` +
-        `\\end{aligned}`;
-
+      const q = `\\begin{aligned}&\\text{(a) }${qOne}\\\\[4pt]&\\text{(b) }${qTwo}\\end{aligned}`;
+      const partBFirstStep = `(${leadingVariableTerm(a, 'x')}${variableTerm(b, 'y')})(${leadingVariableTerm(a, 'x')}${variableTerm(-b, 'y')})${constantTerm(c)}(${leadingVariableTerm(a, 'x')}${variableTerm(b, 'y')})`;
+      const partBMidStep = `(${leadingVariableTerm(a, 'x')}${variableTerm(b, 'y')})(${leadingVariableTerm(a, 'x')}${variableTerm(-b, 'y')}${constantTerm(c)})`;
+      const sol = `\\begin{aligned}\\text{(a) }${qOne}&=${answerOne}\\\\\\text{(b) }${qTwo}&=${partBFirstStep}\\\\&=(${partBMidStep})\\\\&=${answerTwo}\\end{aligned}`;
       return makeQuestion(q, [answerOne, answerTwo], sol);
     }
-
 
     function genLevelThreeIII() {
       const a = rand(2, 10);
 
-      let b = rand(-10, 10);
-      while (b === 0 || b === 1 || b === -1) {
-        b = rand(-10, 10);
-      }
+      let b = rand(-10, 10, [0, 1, -1]);
+      let c = rand(-10, 10, [0, 1, -1]);
 
-      let c = rand(-10, 10);
-      while (c === 0 || c === 1 || c === -1) {
-        c = rand(-10, 10);
-      }
-
-      const g = gcd(a, b);
+      const g = gcd(a, Math.abs(b));
       const ar = a / g;
       const br = b / g;
+
+      /*
+        k is the common factor between g and c.
+
+        Example:
+        16x^2 + 32xy + 16y^2 + 20x + 20y
+
+        g = 4, c = 5, k = 1
+
+        = 4(x+y)[4(x+y)+5]
+        = 4(x+y)(4x+4y+5)
+      */
+      const k = gcd(g, Math.abs(c));
+      const finalOuter = g * k;
 
       const one =
         `${a * a}x^{2}` +
@@ -425,152 +531,147 @@
         `${variableTerm(c * a, 'x')}` +
         `${variableTerm(c * b, 'y')}`;
 
+      const primitiveFactor =
+        `(${leadingVariableTerm(ar, 'x')}` +
+        `${variableTerm(br, 'y')})`;
+
+      const fullFactor =
+        `(${leadingVariableTerm(a, 'x')}` +
+        `${variableTerm(b, 'y')})`;
+
       const answerOne =
         g === 1
-          ? `(${leadingVariableTerm(a, 'x')}${variableTerm(b, 'y')})^{2}`
-          : `${g * g}(${leadingVariableTerm(ar, 'x')}${variableTerm(br, 'y')})^{2}`;
+          ? `${fullFactor}^{2}`
+          : `${g * g}${primitiveFactor}^{2}`;
+
+      /*
+        Do not display an unnecessary coefficient 1.
+
+        If finalOuter = 1:
+        (5x-2y)(5x-2y-4)
+
+        If finalOuter = 4:
+        4(x+y)(4x+4y+5)
+      */
+      const finalBracket =
+        `(${leadingVariableTerm(a / k, 'x')}` +
+        `${variableTerm(b / k, 'y')}` +
+        `${constantTerm(c / k)})`;
 
       const answerTwo =
-        `${g}` +
-        `(${leadingVariableTerm(ar, 'x')}${variableTerm(br, 'y')})` +
-        `(${leadingVariableTerm(a, 'x')}${variableTerm(b, 'y')}${constantTerm(c)})`;
+        finalOuter === 1
+          ? `${primitiveFactor}${finalBracket}`
+          : `${finalOuter}${primitiveFactor}${finalBracket}`;
 
       const q =
-        `\\text{(a) }${one}` +
-        `\\qquad` +
-        `\\text{(b) }${two}`;
+        `\\begin{aligned}` +
+        `\\text{(a) }&${one}\\\\[6pt]` +
+        `\\text{(b) }&${two}` +
+        `\\end{aligned}`;
+
+      /*
+        The new terms are explicitly factorised first.
+
+        For example:
+        -20x+8y = -4(5x-2y)
+      */
+      const newTermCoefficient = c * g;
+
+      const partBLineOne =
+        `${g * g}${primitiveFactor}^{2}` +
+        `${signedCoefficient(newTermCoefficient)}${primitiveFactor}`;
+
+      const firstCommonFactor =
+        g === 1
+          ? primitiveFactor
+          : `${g}${primitiveFactor}`;
+
+      const groupedBracket =
+        `\\left[` +
+        `${leadingVariableTerm(a, 'x')}` +
+        `${variableTerm(b, 'y')}` +
+        `${constantTerm(c)}` +
+        `\\right]`;
+
+      const partBLineTwo =
+        `${firstCommonFactor}${groupedBracket}`;
 
       const sol =
         `\\begin{aligned}` +
-        `\\text{(a) }${one} &= ${answerOne}\\\\` +
-        `\\text{(b) }${two} ` +
-        `&= ${g}(${leadingVariableTerm(ar, 'x')}${variableTerm(br, 'y')})` +
-        `(${leadingVariableTerm(a, 'x')}${variableTerm(b, 'y')}${constantTerm(c)})\\\\` +
-        `&= ${answerTwo}` +
+        `\\text{(a) }${one}` +
+        `&=${answerOne}\\\\[6pt]` +
+        `\\text{(b) }${two}` +
+        `&=${partBLineOne}\\\\` +
+        `&=${partBLineTwo}\\\\` +
+        `&=${answerTwo}` +
         `\\end{aligned}`;
 
       return makeQuestion(q, [answerOne, answerTwo], sol);
     }
-
 
     function genLevelThreeIV() {
-      const a = rand(3, 10);
-      const b = -rand(5, 20);
+      const a = rand(3, 10), b = -rand(5, 20);
       const sign = rand(0, 1) === 0 ? -1 : 1;
+      const sum = a + b, product = a * b;
 
-      const sum = a + b;
-      const product = a * b;
+      const one = `x^{2}${variableTerm(sum, 'x')}${constantTerm(product)}`;
+      const two = `${one}${variableTerm(sign, 'kx')}${variableTerm(sign * a, 'k')}`;
 
-      const one =
-        `x^{2}` +
-        `${variableTerm(sum, 'x')}` +
-        `${constantTerm(product)}`;
+      const answerOne = `(x${constantTerm(a)})(x${constantTerm(b)})`;
+      const answerTwo = `(x${constantTerm(a)})(x${constantTerm(b)}${variableTerm(sign, 'k')})`;
 
-      const two =
-        `${one}` +
-        `${variableTerm(sign, 'kx')}` +
-        `${variableTerm(sign * a, 'k')}`;
-
-      const answerOne =
-        `(x${constantTerm(a)})` +
-        `(x${constantTerm(b)})`;
-
-      const answerTwo =
-        `(x${constantTerm(a)})` +
-        `(x${constantTerm(b)}${variableTerm(sign, 'k')})`;
-
-      const q =
-        `\\text{(a) }${one}` +
-        `\\qquad` +
-        `\\text{(b) }${two}`;
-
-      const sol =
-        `\\begin{aligned}` +
-        `\\text{(a) }${one} &= ${answerOne}\\\\` +
-        `\\text{(b) }${two} ` +
-        `&= (x${constantTerm(a)})(x${constantTerm(b)})` +
-        `${variableTerm(sign, 'k')}(x${constantTerm(a)})\\\\` +
-        `&= ${answerTwo}` +
-        `\\end{aligned}`;
-
+      const q = `\\begin{aligned}&\\text{(a) }${one}\\\\[4pt]&\\text{(b) }${two}\\end{aligned}`;
+      const sol = `\\begin{aligned}\\text{(a) }${one}&=${answerOne}\\\\\\text{(b) }${two}&=(x${constantTerm(a)})(x${constantTerm(b)})${variableTerm(sign, 'k')}(x${constantTerm(a)})\\\\&=${answerTwo}\\end{aligned}`;
       return makeQuestion(q, [answerOne, answerTwo], sol);
     }
-
 
     function genLevelThreeV() {
-      const a = rand(2, 10);
-
-      let b = rand(-10, 10);
-      while (b === 0) {
-        b = rand(-10, 10);
-      }
-
-      const c = rand(2, 10);
-
-      let d = rand(-10, 10);
-      while (d === 0) {
-        d = rand(-10, 10);
-      }
-
-      const w = rand(1, 4);
-      const signOne = rand(0, 1) === 0 ? -1 : 1;
-      const signTwo = rand(0, 1) === 0 ? -1 : 1;
-
+      let a = rand(2, 10), b = rand(-10, 10, [0]);
+      let c = rand(2, 10), d = rand(-10, 10, [0]);
+      const w = rand(1, 4), signOne = rand(0, 1) === 0 ? -1 : 1, signTwo = rand(0, 1) === 0 ? -1 : 1;
       const middle = a * d + b * c;
 
-      const one =
-        `${leadingVariableTerm(a * c, 'x^{2}')}` +
-        `${variableTerm(middle, 'xy')}` +
-        `${variableTerm(b * d, 'y^{2}')}`;
+      const g1 = gcd(a, Math.abs(b));
+      const g2 = gcd(c, Math.abs(d));
+      const gTotal = g1 * g2;
 
-      const two =
-        `${leadingVariableTerm(w * signOne * c, 'mx')}` +
-        `${variableTerm(w * signOne * d, 'my')}` +
-        `${variableTerm(signTwo * a * c, 'x^{2}')}` +
-        `${variableTerm(signTwo * middle, 'xy')}` +
-        `${variableTerm(signTwo * b * d, 'y^{2}')}`;
+      const one = `${leadingVariableTerm(a * c, 'x^{2}')}${variableTerm(middle, 'xy')}${variableTerm(b * d, 'y^{2}')}`;
+      const two = `${leadingVariableTerm(w * signOne * c, 'mx')}${variableTerm(w * signOne * d, 'my')}${variableTerm(signTwo * a * c, 'x^{2}')}${variableTerm(signTwo * middle, 'xy')}${variableTerm(signTwo * b * d, 'y^{2}')}`;
 
-      const answerOne =
-        `(${leadingVariableTerm(a, 'x')}${variableTerm(b, 'y')})` +
-        `(${leadingVariableTerm(c, 'x')}${variableTerm(d, 'y')})`;
+      const answerOne = gTotal === 1
+        ? `(${leadingVariableTerm(a, 'x')}${variableTerm(b, 'y')})(${leadingVariableTerm(c, 'x')}${variableTerm(d, 'y')})`
+        : `${gTotal}(${leadingVariableTerm(a / g1, 'x')}${variableTerm(b / g1, 'y')})(${leadingVariableTerm(c / g2, 'x')}${variableTerm(d / g2, 'y')})`;
 
-      const inner =
-        `${leadingVariableTerm(w * signOne, 'm')}` +
-        `${variableTerm(signTwo * a, 'x')}` +
-        `${variableTerm(signTwo * b, 'y')}`;
+      const innerCoeffM = w * signOne;
+      const innerCoeffX = signTwo * a;
+      const innerCoeffY = signTwo * b;
+      const innerG = gcd(gcd(Math.abs(innerCoeffM), Math.abs(innerCoeffX)), Math.abs(innerCoeffY));
+      const finalOuter = g2 * innerG;
 
-      const answerTwo =
-        `(${leadingVariableTerm(c, 'x')}${variableTerm(d, 'y')})` +
-        `(${inner})`;
+      const factorC = `(${leadingVariableTerm(c / g2, 'x')}${variableTerm(d / g2, 'y')})`;
+      const inner = `${leadingVariableTerm(innerCoeffM / innerG, 'm')}${variableTerm(innerCoeffX / innerG, 'x')}${variableTerm(innerCoeffY / innerG, 'y')}`;
+      const answerTwo = finalOuter === 1 ? `${factorC}(${inner})` : `${finalOuter}${factorC}(${inner})`;
 
-      const q =
-        `\\text{(a) }${one}` +
-        `\\qquad` +
-        `\\text{(b) }${two}`;
-
-      const sol =
-        `\\begin{aligned}` +
-        `\\text{(a) }${one} &= ${answerOne}\\\\` +
-        `\\text{(b) }${two} ` +
-        `&= (${leadingVariableTerm(c, 'x')}${variableTerm(d, 'y')})` +
-        `(${inner})\\\\` +
-        `&= ${answerTwo}` +
-        `\\end{aligned}`;
-
+      const q = `\\begin{aligned}&\\text{(a) }${one}\\\\[4pt]&\\text{(b) }${two}\\end{aligned}`;
+      const sol = `\\begin{aligned}\\text{(a) }${one}&=${answerOne}\\\\\\text{(b) }${two}&=(${leadingVariableTerm(c, 'x')}${variableTerm(d, 'y')})(${leadingVariableTerm(innerCoeffM, 'm')}${variableTerm(innerCoeffX, 'x')}${variableTerm(innerCoeffY, 'y')})\\\\&=${answerTwo}\\end{aligned}`;
       return makeQuestion(q, [answerOne, answerTwo], sol);
     }
-
 
     function genLevelThreeVI() {
       const a = rand(2, 7);
       const sign = rand(0, 1) === 0 ? -1 : 1;
       const c = rand(8, 12);
 
-      let d = rand(-10, 5);
-      while (d === 0) {
-        d = rand(-10, 5);
+      let d = rand(-10, 5, [0]);
+      while (gcd(c, Math.abs(d)) !== 1) {
+        d = rand(-10, 5, [0]);
       }
 
+      /*
+        Part (a):
+        a^2x^2 + 2(sign)ax + 1
+        = (ax + sign)^2
+      */
       const squareOne =
         `${a * a}x^{2}` +
         `${variableTerm(2 * sign * a, 'x')}` +
@@ -580,13 +681,23 @@
         `${leadingVariableTerm(a, 'x')}` +
         `${constantTerm(sign)}`;
 
+      const answerOne = `(${linearOne})^{2}`;
+
+      /*
+        Part (b) uses the expanded negative of part (a).
+
+        Example:
+        (10x-3m)^2 - 4x^2 - 4x - 1
+      */
       const firstSquare =
-        `(${leadingVariableTerm(c, 'x')}${variableTerm(d, 'm')})^{2}`;
+        `(${leadingVariableTerm(c, 'x')}` +
+        `${variableTerm(d, 'm')})^{2}`;
 
       const two =
-        `${firstSquare}-(${linearOne})^{2}`;
-
-      const answerOne = `(${linearOne})^{2}`;
+        `${firstSquare}` +
+        `${variableTerm(-(a * a), 'x^{2}')}` +
+        `${variableTerm(-2 * sign * a, 'x')}` +
+        `${constantTerm(-1)}`;
 
       const factorOne =
         `(${leadingVariableTerm(c + a, 'x')}` +
@@ -600,23 +711,32 @@
 
       const answerTwo = `${factorOne}${factorTwo}`;
 
+      /*
+        One left-aligned array column:
+        (a) and (b) always begin at the same position.
+      */
       const q =
-        `\\text{(a) }${squareOne}` +
-        `\\qquad` +
-        `\\text{(b) }${two}`;
+        `\\begin{array}{l}` +
+        `\\text{(a) }${squareOne}\\\\[8pt]` +
+        `\\text{(b) }${two}` +
+        `\\end{array}`;
 
       const sol =
         `\\begin{aligned}` +
-        `\\text{(a) }${squareOne} &= ${answerOne}\\\\` +
-        `\\text{(b) }${two} ` +
-        `&= (${leadingVariableTerm(c, 'x')}${variableTerm(d, 'm')}+${linearOne})` +
-        `(${leadingVariableTerm(c, 'x')}${variableTerm(d, 'm')}-${linearOne})\\\\` +
-        `&= ${answerTwo}` +
+        `\\text{(a) }${squareOne}` +
+        `&=(${linearOne})^{2}\\\\[8pt]` +
+        `\\text{(b) }${two}` +
+        `&=(${leadingVariableTerm(c, 'x')}${variableTerm(d, 'm')})^{2}` +
+        `-(${linearOne})^{2}\\\\` +
+        `&=\\left[(${leadingVariableTerm(c, 'x')}${variableTerm(d, 'm')})` +
+        `+(${linearOne})\\right]` +
+        `\\left[(${leadingVariableTerm(c, 'x')}${variableTerm(d, 'm')})` +
+        `-(${linearOne})\\right]\\\\` +
+        `&=${answerTwo}` +
         `\\end{aligned}`;
 
       return makeQuestion(q, [answerOne, answerTwo], sol);
     }
-
 
     function makeLevel(level) {
       const groups = [
@@ -624,58 +744,90 @@
         [genPerfectSquare, genDifferenceSquares, genTrinomial, genGeneralQuadratic],
         [genLevelThreeI, genLevelThreeII, genLevelThreeIII, genLevelThreeIV, genLevelThreeV, genLevelThreeVI]
       ];
-      const list = groups[level - 1];
+      const list = groups[level - 1] || groups[0];
       return list[rand(0, list.length - 1)]();
     }
 
-    function startQuestion(level) {
-      currentQuestion = makeLevel(level);
-      document.getElementById('menu').classList.add('hidden');
-      document.getElementById('practice').classList.remove('hidden');
-      document.getElementById('levelTitle').textContent = `Level ${['One', 'Two', 'Three'][level - 1]} Factorization`;
-      const q = document.getElementById('questionDisplay');
-      q.value = currentQuestion.questionTex;
-      document.getElementById('answers').innerHTML = '';
-      activeField = null;
-      currentQuestion.answers.forEach((_, i) => {
-        const holder = document.getElementById('answers');
-        if (currentQuestion.answers.length > 1) {
-          const label = document.createElement('p');
-          label.className = 'mb-1 text-center font-bold';
-          label.textContent = i === 0 ? '(a)' : '(b)';
-          holder.appendChild(label);
+    function renderKaTeX(tex, container) {
+      if (!container) return;
+      try {
+        if (window.katex && typeof window.katex.render === 'function') {
+          katex.render(tex, container, { displayMode: true, throwOnError: false });
+        } else {
+          container.textContent = tex;
         }
-        const field = document.createElement('math-field');
-        field.id = `answer-${i}`;
-        field.className = 'answer-math';
-        field.setAttribute('math-virtual-keyboard-policy', 'manual');
-        field.addEventListener('focusin', () => activeField = field);
-        field.addEventListener('pointerdown', () => activeField = field);
-        holder.appendChild(field);
-        if (i === 0) activeField = field;
-      });
-      initCanvas();
-      resizeCanvas();
-      clearScratchpad();
-      setTimeout(() => activeField && activeField.focus(), 120);
+      } catch (err) {
+        console.error('KaTeX render error:', err);
+        container.textContent = tex;
+      }
+    }
+
+    function startQuestion(level) {
+      try {
+        currentQuestion = makeLevel(level);
+        document.getElementById('menu').classList.add('hidden');
+        document.getElementById('practice').classList.remove('hidden');
+        document.getElementById('levelTitle').textContent = `Level ${['One', 'Two', 'Three'][level - 1]} Factorization`;
+        
+        const qContainer = document.getElementById('questionDisplay');
+        renderKaTeX(currentQuestion.questionTex, qContainer);
+        
+        const answersHolder = document.getElementById('answers');
+        answersHolder.innerHTML = '';
+        activeField = null;
+
+        currentQuestion.answers.forEach((_, i) => {
+          if (currentQuestion.answers.length > 1) {
+            const label = document.createElement('p');
+            label.className = 'mb-1 text-center font-bold text-slate-700';
+            label.textContent = i === 0 ? '(a)' : '(b)';
+            answersHolder.appendChild(label);
+          }
+          const field = document.createElement('math-field');
+          field.id = `answer-${i}`;
+          field.className = 'answer-math';
+          field.setAttribute('math-virtual-keyboard-policy', 'manual');
+          field.addEventListener('focusin', () => activeField = field);
+          field.addEventListener('pointerdown', () => activeField = field);
+          answersHolder.appendChild(field);
+          if (i === 0) activeField = field;
+        });
+
+        initCanvas();
+        setTimeout(resizeCanvas, 60);
+        clearScratchpad();
+        setTimeout(() => { if (activeField && typeof activeField.focus === 'function') activeField.focus(); }, 150);
+      } catch (err) {
+        console.error('startQuestion error:', err);
+      }
     }
 
     function insertMath(value) {
       const field = activeField || document.getElementById('answer-0');
       if (!field) return;
-      field.focus();
       try {
-        field.insert(value);
-      } catch (error) {
-        try { field.executeCommand(['insert', value]); } catch (fallbackError) { console.error(fallbackError); }
+        if (typeof field.focus === 'function') field.focus();
+        if (typeof field.insert === 'function') {
+          field.insert(value);
+        } else if (typeof field.executeCommand === 'function') {
+          field.executeCommand(['insert', value]);
+        }
+      } catch (e) {
+        console.error('insertMath error:', e);
       }
     }
 
     function cmdMath(command) {
       const field = activeField || document.getElementById('answer-0');
       if (!field) return;
-      field.focus();
-      try { field.executeCommand(command); } catch (error) { console.error(error); }
+      try {
+        if (typeof field.focus === 'function') field.focus();
+        if (typeof field.executeCommand === 'function') {
+          field.executeCommand(command);
+        }
+      } catch (e) {
+        console.error('cmdMath error:', e);
+      }
     }
 
     window.insertMath = insertMath;
@@ -683,78 +835,105 @@
     window.startQuestion = startQuestion;
 
     function clean(latex) {
-      return (latex || '')
+      if (!latex) return '';
+      return String(latex)
         .replace(/\\left|\\right|\\mleft|\\mright|\\,/g, '')
         .replace(/\\cdot/g, '*')
+        .replace(/\\times/g, '*')
         .replace(/\s+/g, '')
         .replace(/[−–—]/g, '-');
     }
 
     function toMathJs(latex) {
-      let s = clean(latex)
-        .replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, '($1)/($2)')
-        .replace(/\{([^{}]*)\}/g, '($1)')
-        .replace(/\^\(([^()]*)\)/g, '^($1)')
-        .replace(/\^([0-9]+)/g, '^$1');
-      return s
-        .replace(/([0-9xyabcmnkz])([xyabcmnkz(])/g, '$1*$2')
-        .replace(/\)\(/g, ')*(');
+      let s = clean(latex);
+      if (!s) return '0';
+      s = s.replace(/\\(?:d|t)?frac\{([^{}]+)\}\{([^{}]+)\}/g, '(($1)/($2))');
+      s = s.replace(/\{([^{}]*)\}/g, '($1)');
+      s = s.replace(/\^\(([^()]*)\)/g, '^($1)');
+      s = s.replace(/\^([0-9a-zA-Z]+)/g, '^($1)');
+      s = s.replace(/([0-9a-zA-Z])\(/g, '$1*(');
+      s = s.replace(/\)([0-9a-zA-Z(])/g, ')*$1');
+      s = s.replace(/([0-9])([a-zA-Z])/g, '$1*$2');
+      while (/([a-zA-Z])([a-zA-Z])/.test(s)) {
+        s = s.replace(/([a-zA-Z])([a-zA-Z])/g, '$1*$2');
+      }
+      return s;
     }
 
     function equivalent(student, expected) {
+      if (!student || !expected) return false;
       try {
+        if (typeof math === 'undefined' || !math.parse) {
+          return clean(student) === clean(expected);
+        }
         const a = math.parse(toMathJs(student));
         const b = math.parse(toMathJs(expected));
         const tests = [
-          { x:2, y:3, z:5, a:7, b:11, c:13, m:17, n:19, k:23 },
-          { x:-2, y:5, z:3, a:2, b:-4, c:7, m:11, n:-3, k:5 },
-          { x:4, y:-3, z:2, a:-2, b:5, c:7, m:-5, n:2, k:-3 }
+          { x: 2, y: 3, z: 5, a: 7, b: 11, c: 13, m: 17, n: 19, k: 23 },
+          { x: -2, y: 5, z: 3, a: 2, b: -4, c: 7, m: 11, n: -3, k: 5 },
+          { x: 4, y: -3, z: 2, a: -2, b: 5, c: 7, m: -5, n: 2, k: -3 },
+          { x: 3, y: 2, z: -4, a: 3, b: 2, c: -1, m: 2, n: 3, k: 4 }
         ];
-        return tests.every(scope => Math.abs(a.evaluate(scope) - b.evaluate(scope)) < 1e-8);
+        return tests.every(scope => {
+          try {
+            const valA = a.evaluate(scope);
+            const valB = b.evaluate(scope);
+            return Number.isFinite(valA) && Number.isFinite(valB) && Math.abs(valA - valB) < 1e-6;
+          } catch (e) {
+            return false;
+          }
+        });
       } catch (error) {
-        return false;
+        return clean(student) === clean(expected);
       }
     }
 
     function looksFactorised(latex) {
       const s = clean(latex);
-      return s.includes('(') || s.includes('^2');
+      return s.includes('(') || s.includes('^2') || s.includes('^{2}');
     }
 
     function checkAnswer() {
       if (!currentQuestion) return;
-      const correct = currentQuestion.answers.every((answer, i) => {
-        const field = document.getElementById(`answer-${i}`);
-        const value = field ? field.value : '';
-        return value.trim() && looksFactorised(value) && equivalent(value, answer);
-      });
-      const feedback = document.getElementById('feedback');
-      const title = document.getElementById('feedbackTitle');
-      const text = document.getElementById('feedbackText');
-      const solutionWrap = document.getElementById('solutionWrap');
-      const continueButton = document.getElementById('continueBtn');
-      if (correct) {
-        title.textContent = 'Correct!';
-        title.style.color = '#137a4a';
-        text.textContent = 'Well done. Returning to the home page…';
-        solutionWrap.classList.add('hidden');
-        continueButton.classList.add('hidden');
-        feedback.classList.remove('hidden');
-        setTimeout(() => { feedback.classList.add('hidden'); backToMenu(); }, 850);
-      } else {
-        title.textContent = 'Not quite';
-        title.style.color = '#b42318';
-        text.textContent = 'Review the solution, then continue to try this same question again.';
-        document.getElementById('solutionDisplay').value = currentQuestion.solutionTex;
-        solutionWrap.classList.remove('hidden');
-        continueButton.classList.remove('hidden');
-        feedback.classList.remove('hidden');
+      try {
+        const correct = currentQuestion.answers.every((answer, i) => {
+          const field = document.getElementById(`answer-${i}`);
+          const value = field ? field.value : '';
+          return value && value.trim() && looksFactorised(value) && equivalent(value, answer);
+        });
+
+        const feedback = document.getElementById('feedback');
+        const title = document.getElementById('feedbackTitle');
+        const text = document.getElementById('feedbackText');
+        const solutionWrap = document.getElementById('solutionWrap');
+        const continueButton = document.getElementById('continueBtn');
+
+        if (correct) {
+          title.textContent = 'Correct!';
+          title.style.color = '#137a4a';
+          text.textContent = 'Well done. Returning to the home page…';
+          solutionWrap.classList.add('hidden');
+          continueButton.classList.add('hidden');
+          feedback.classList.remove('hidden');
+          setTimeout(() => { feedback.classList.add('hidden'); backToMenu(); }, 850);
+        } else {
+          title.textContent = 'Not quite';
+          title.style.color = '#b42318';
+          text.textContent = 'Review the solution, then continue to try this same question again.';
+          const solDisplay = document.getElementById('solutionDisplay');
+          renderKaTeX(currentQuestion.solutionTex, solDisplay);
+          solutionWrap.classList.remove('hidden');
+          continueButton.classList.remove('hidden');
+          feedback.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error('checkAnswer error:', err);
       }
     }
 
     function closeFeedback() {
       document.getElementById('feedback').classList.add('hidden');
-      setTimeout(() => activeField && activeField.focus(), 80);
+      setTimeout(() => { if (activeField && typeof activeField.focus === 'function') activeField.focus(); }, 80);
     }
 
     function backToMenu() {
@@ -762,40 +941,64 @@
       document.getElementById('menu').classList.remove('hidden');
     }
 
+    /* ===== HIGH-RESOLUTION TOUCH CANVAS (IPAD & TABLETS) ===== */
     function initCanvas() {
       canvas = document.getElementById('scratchpad');
       if (!canvas || canvas.dataset.ready) return;
       ctx = canvas.getContext('2d');
       canvas.dataset.ready = '1';
-      ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'pointerleave'].forEach(type => canvas.addEventListener(type, draw));
+
+      ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'pointerleave'].forEach(type => {
+        canvas.addEventListener(type, handleDraw, { passive: false });
+      });
       window.addEventListener('resize', resizeCanvas);
     }
 
     function resizeCanvas() {
       if (!canvas || !ctx) return;
-      const old = document.createElement('canvas');
-      old.width = canvas.width;
-      old.height = canvas.height;
-      if (old.width) old.getContext('2d').drawImage(canvas, 0, 0);
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      
+      const temp = document.createElement('canvas');
+      temp.width = canvas.width;
+      temp.height = canvas.height;
+      if (canvas.width && canvas.height) {
+        temp.getContext('2d').drawImage(canvas, 0, 0);
+      }
+
+      canvas.width = Math.max(rect.width * dpr, 300);
+      canvas.height = Math.max(rect.height * dpr, 300);
+
+      ctx.scale(dpr, dpr);
       ctx.strokeStyle = '#1876c9';
       ctx.lineWidth = 3;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      if (old.width) ctx.drawImage(old, 0, 0);
+
+      if (temp.width && temp.height) {
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(temp, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+      }
     }
 
-    function draw(event) {
+    function handleDraw(e) {
+      if (!canvas || !ctx) return;
       const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      if (event.type === 'pointerdown') {
+      const clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+      const clientY = e.clientY !== undefined ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      if (e.type === 'pointerdown') {
         drawing = true;
-        canvas.setPointerCapture && canvas.setPointerCapture(event.pointerId);
+        if (canvas.setPointerCapture) {
+          try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+        }
         ctx.beginPath();
         ctx.moveTo(x, y);
-      } else if (event.type === 'pointermove' && drawing) {
+      } else if (e.type === 'pointermove' && drawing) {
         ctx.lineTo(x, y);
         ctx.stroke();
         ctx.beginPath();
@@ -804,17 +1007,26 @@
         drawing = false;
         ctx.beginPath();
       }
-      event.preventDefault();
+      if (e.cancelable) e.preventDefault();
     }
 
     function clearScratchpad() {
-      if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (ctx && canvas) {
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+      }
     }
 
     window.checkAnswer = checkAnswer;
     window.closeFeedback = closeFeedback;
     window.backToMenu = backToMenu;
     window.clearScratchpad = clearScratchpad;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initCanvas();
+    });
   </script>
 </body>
 </html>

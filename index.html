@@ -139,7 +139,7 @@
       gap: 6px;
       margin: 6px 0;
     }
-    .variables { grid-template-columns: repeat(7, 1fr); }
+    .variables { grid-template-columns: repeat(8, 1fr); }
     .numbers { grid-template-columns: repeat(10, 1fr); }
     .operators { grid-template-columns: repeat(7, 1fr); }
     .key {
@@ -168,6 +168,11 @@
     .check { background: #39a96b; }
 
     .back { background: #8796aa; }
+
+    .continue {
+      background: #5faee3;
+      color: #ffffff;
+    }
 
     .clear {
       display: block;
@@ -285,8 +290,15 @@
           <div id="answers"></div>
           <div class="keyboard">
             <div class="key-row variables">
-              <button type="button" class="key" onclick="insertMath('x')">x</button><button type="button" class="key" onclick="insertMath('y')">y</button><button type="button" class="key" onclick="insertMath('a')">a</button><button type="button" class="key" onclick="insertMath('b')">b</button><button type="button" class="key" onclick="insertMath('c')">c</button><button type="button" class="key" onclick="insertMath('m')">m</button><button type="button" class="key" onclick="insertMath('n')">n</button>
-            </div>
+            <button type="button" class="key" onclick="insertMath('x')">x</button>
+            <button type="button" class="key" onclick="insertMath('y')">y</button>
+            <button type="button" class="key" onclick="insertMath('a')">a</button>
+            <button type="button" class="key" onclick="insertMath('b')">b</button>
+            <button type="button" class="key" onclick="insertMath('c')">c</button>
+            <button type="button" class="key" onclick="insertMath('k')">k</button>
+            <button type="button" class="key" onclick="insertMath('m')">m</button>
+            <button type="button" class="key" onclick="insertMath('n')">n</button>
+          </div>
             <div class="key-row numbers">
               <button type="button" class="key" onclick="insertMath('0')">0</button><button type="button" class="key" onclick="insertMath('1')">1</button><button type="button" class="key" onclick="insertMath('2')">2</button><button type="button" class="key" onclick="insertMath('3')">3</button><button type="button" class="key" onclick="insertMath('4')">4</button><button type="button" class="key" onclick="insertMath('5')">5</button><button type="button" class="key" onclick="insertMath('6')">6</button><button type="button" class="key" onclick="insertMath('7')">7</button><button type="button" class="key" onclick="insertMath('8')">8</button><button type="button" class="key" onclick="insertMath('9')">9</button>
             </div>

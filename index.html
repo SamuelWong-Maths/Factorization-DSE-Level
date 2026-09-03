@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
   <!-- MathLive for interactive student input & virtual keyboard -->
-  <script src="https://cdn.jsdelivr.net/npm/mathlive@0.98.6/dist/mathlive.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/mathlive"></script>
   <!-- MathJS for intelligent algebraic equivalence checking -->
   <script src="https://cdn.jsdelivr.net/npm/mathjs@13.2.0/lib/browser/math.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,9 +16,9 @@
     :root {
       --ink: #18344f;
       --blue: #1769aa;
-      --green: #137a4a;
+      --green: #39a96b;
       --amber: #dda20a;
-      --purple: #7042a6;
+      --purple: #79bfe8;
       --bg: #edf4f8;
       --line: #c8d8e5;
     }
@@ -143,7 +143,7 @@
     .numbers { grid-template-columns: repeat(10, 1fr); }
     .operators { grid-template-columns: repeat(7, 1fr); }
     .key {
-      min-height: 42px;
+      min-height: 48px;
       padding: 4px 2px;
       color: var(--ink);
       background: #fff;
@@ -165,13 +165,14 @@
       gap: 14px;
       margin-top: 14px;
     }
-    .check { background: #137a4a; }
-    .back { background: #64748b; }
-    .continue { background: #1769aa; }
+    .check { background: #39a96b; }
+
+    .back { background: #8796aa; }
+
     .clear {
       display: block;
       margin: 10px auto 0;
-      background: #c2413a;
+      background: #e06b65;
     }
     .check, .back, .clear, .continue {
       min-width: 170px;
@@ -327,6 +328,19 @@
     let currentQuestion = null;
     let activeField = null;
     let canvas = null, ctx = null, drawing = false;
+
+    let mathLiveReady = false;
+
+    async function waitForMathLive() {
+      try {
+        if (window.customElements && customElements.whenDefined) {
+          await customElements.whenDefined('math-field');
+        }
+        mathLiveReady = true;
+      } catch (error) {
+        console.error('MathLive failed to initialise:', error);
+      }
+    }
 
     const rand = (min, max, excludes = []) => {
       let v;
@@ -762,7 +776,14 @@
       }
     }
 
-    function startQuestion(level) {
+    async function startQuestion(level) {
+      await waitForMathLive();
+
+      if (!mathLiveReady) {
+        alert('The maths input is still loading. Please try again in a moment.');
+        return;
+      }
+
       try {
         currentQuestion = makeLevel(level);
         document.getElementById('menu').classList.add('hidden');
@@ -803,36 +824,51 @@
     }
 
     function insertMath(value) {
-      const field = activeField || document.getElementById('answer-0');
-      if (!field) return;
-      try {
-        if (typeof field.focus === 'function') field.focus();
-        if (typeof field.insert === 'function') {
-          field.insert(value);
-        } else if (typeof field.executeCommand === 'function') {
-          field.executeCommand(['insert', value]);
-        }
-      } catch (e) {
-        console.error('insertMath error:', e);
-      }
-    }
+  const field = activeField || document.getElementById('answer-0');
 
-    function cmdMath(command) {
-      const field = activeField || document.getElementById('answer-0');
-      if (!field) return;
-      try {
-        if (typeof field.focus === 'function') field.focus();
-        if (typeof field.executeCommand === 'function') {
-          field.executeCommand(command);
-        }
-      } catch (e) {
-        console.error('cmdMath error:', e);
-      }
-    }
+  if (!field) {
+    console.error('No active answer box was found.');
+    return;
+  }
 
-    window.insertMath = insertMath;
-    window.cmdMath = cmdMath;
-    window.startQuestion = startQuestion;
+  try {
+    field.focus();
+
+    if (typeof field.insert === 'function') {
+      field.insert(value);
+    } else {
+      console.error('MathLive is not ready: insert() is unavailable.');
+    }
+  } catch (error) {
+    console.error('Math keypad insert error:', error);
+  }
+}
+
+function cmdMath(command) {
+  const field = activeField || document.getElementById('answer-0');
+
+  if (!field) {
+    console.error('No active answer box was found.');
+    return;
+  }
+
+  try {
+    field.focus();
+
+    if (typeof field.executeCommand === 'function') {
+      field.executeCommand(command);
+    } else {
+      console.error('MathLive is not ready: executeCommand() is unavailable.');
+    }
+  } catch (error) {
+    console.error('Math keypad command error:', error);
+  }
+}
+
+window.insertMath = insertMath;
+window.cmdMath = cmdMath;
+window.startQuestion = startQuestion;
+  
 
     function clean(latex) {
       if (!latex) return '';
@@ -1024,8 +1060,11 @@
     window.backToMenu = backToMenu;
     window.clearScratchpad = clearScratchpad;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      initCanvas();
+
+  
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initCanvas();
     });
   </script>
 </body>
